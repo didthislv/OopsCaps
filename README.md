@@ -8,6 +8,7 @@ OopsCaps is a lightweight, portable Windows utility that allows you to quickly c
   - **UPPERCASE:** `hello` ➔ `HELLO`
   - **lowercase:** `HELLO` ➔ `hello`
   - **Title Case:** `hello world` ➔ `Hello World`
+* **Smart Caps Lock Toggle:** Automatically toggles your system's Caps Lock state after using the *Invert* function, immediately fixing the root cause of your typo.
 - **Customizable Hotkeys:** Set your own modifiers (Ctrl, Shift, Alt) and specific letter keys for each action.
 - **Multi-language Support:** The interface is available in English, Latvian, and Russian.
 - **Audio Feedback:** An optional, pleasant sound effect ("Speech On" / subtle click) plays when text is successfully transformed.
