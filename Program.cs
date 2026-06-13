@@ -27,7 +27,7 @@ namespace OopsCaps
         public static string LblLang(string lang) { return lang == "lv" ? "Izvēlies valodu:" : (lang == "ru" ? "Выберите язык:" : "Language:"); }
         public static string LblSupport(string lang) { return lang == "lv" ? "Atbalsti projektu:" : (lang == "ru" ? "Поддержать проект:" : "Support the project:"); }
         public static string BtnSave(string lang) { return lang == "lv" ? "Saglabāt" : (lang == "ru" ? "Сохранить" : "Save"); }
-        public static string VerAuth(string lang) { return lang == "lv" ? "Versija 1.1\n© 2026 did.this.lv" : (lang == "ru" ? "Версия 1.1\n© 2026 did.this.lv" : "Version 1.1\n© 2026 did.this.lv"); }
+        public static string VerAuth(string lang) { return lang == "lv" ? "Versija 1.2\n© 2026 didthis.lv" : (lang == "ru" ? "Версия 1.2\n© 2026 didthis.lv" : "Version 1.2\n© 2026 didthis.lv"); }
     }
 
     static class Program
