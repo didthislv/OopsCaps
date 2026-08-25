@@ -27,7 +27,7 @@ namespace OopsCaps
         public static string LblLang(string lang) { return lang == "lv" ? "Izvēlies valodu:" : (lang == "ru" ? "Выберите язык:" : "Language:"); }
         public static string LblSupport(string lang) { return lang == "lv" ? "Atbalsti projektu:" : (lang == "ru" ? "Поддержать проект:" : "Support the project:"); }
         public static string BtnSave(string lang) { return lang == "lv" ? "Saglabāt" : (lang == "ru" ? "Сохранить" : "Save"); }
-        public static string VerAuth(string lang) { return lang == "lv" ? "Versija 1.2\n© 2026 didthis.lv" : (lang == "ru" ? "Версия 1.2\n© 2026 didthis.lv" : "Version 1.2\n© 2026 didthis.lv"); }
+        public static string VerAuth(string lang) { return lang == "lv" ? "Versija v1.3\n© 2026 didthis.lv" : (lang == "ru" ? "Версия v1.3\n© 2026 didthis.lv" : "Version v1.3\n© 2026 didthis.lv"); }
     }
 
     static class Program
@@ -117,39 +117,82 @@ namespace OopsCaps
 
             protected override void WndProc(ref Message m) { if (m.Msg == 0x0312) { int id = m.WParam.ToInt32(); if (id == HK_INV) TransformText(0, VkInv); else if (id == HK_UPR) TransformText(1, VkUpr); else if (id == HK_LWR) TransformText(2, VkLwr); else if (id == HK_TTL) TransformText(3, VkTtl); } base.WndProc(ref m); }
 
+            private string SafeGetText()
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    try { if (Clipboard.ContainsText()) return Clipboard.GetText(); return null; }
+                    catch { System.Threading.Thread.Sleep(20); }
+                }
+                return null;
+            }
+
+            private void SafeSetText(string text)
+            {
+                if (string.IsNullOrEmpty(text)) return;
+                for (int i = 0; i < 10; i++)
+                {
+                    try { Clipboard.SetText(text); return; }
+                    catch { System.Threading.Thread.Sleep(20); }
+                }
+            }
+
+            private void SafeClear()
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    try { Clipboard.Clear(); return; }
+                    catch { System.Threading.Thread.Sleep(20); }
+                }
+            }
+
             private void TransformText(int mode, uint vk)
             {
-                keybd_event(0x10, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); keybd_event(0x11, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); keybd_event(0x12, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); keybd_event((byte)vk, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); System.Threading.Thread.Sleep(50);
-                string oldText = Clipboard.ContainsText() ? Clipboard.GetText() : null; Clipboard.Clear();
-                keybd_event(0x11, 0, 0, UIntPtr.Zero); keybd_event(0x43, 0, 0, UIntPtr.Zero); System.Threading.Thread.Sleep(20); keybd_event(0x43, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); keybd_event(0x11, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); System.Threading.Thread.Sleep(150);
-                
-                if (Clipboard.ContainsText())
+                try
                 {
-                    string text = Clipboard.GetText(); string fixedText = text;
-                    if (mode == 0) { char[] chars = text.ToCharArray(); for (int i = 0; i < chars.Length; i++) { if (char.IsUpper(chars[i])) chars[i] = char.ToLower(chars[i]); else if (char.IsLower(chars[i])) chars[i] = char.ToUpper(chars[i]); } fixedText = new string(chars); }
-                    else if (mode == 1) fixedText = text.ToUpper(); else if (mode == 2) fixedText = text.ToLower(); else if (mode == 3) fixedText = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(text.ToLower());
+                    keybd_event(0x10, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); keybd_event(0x11, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); keybd_event(0x12, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); keybd_event((byte)vk, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); System.Threading.Thread.Sleep(50);
                     
-                    Clipboard.SetText(fixedText); System.Threading.Thread.Sleep(50);
-                    keybd_event(0x11, 0, 0, UIntPtr.Zero); keybd_event(0x56, 0, 0, UIntPtr.Zero); System.Threading.Thread.Sleep(20); keybd_event(0x56, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); keybd_event(0x11, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); System.Threading.Thread.Sleep(150);
+                    string oldText = SafeGetText(); 
+                    SafeClear();
                     
-                    if (mode == 0 && ToggleCaps)
+                    keybd_event(0x11, 0, 0, UIntPtr.Zero); keybd_event(0x43, 0, 0, UIntPtr.Zero); System.Threading.Thread.Sleep(20); keybd_event(0x43, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); keybd_event(0x11, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); System.Threading.Thread.Sleep(200);
+                    
+                    string text = SafeGetText();
+                    if (!string.IsNullOrEmpty(text))
                     {
-                        keybd_event(0x14, 0x3A, 0, UIntPtr.Zero); 
-                        keybd_event(0x14, 0x3A, KEYEVENTF_KEYUP, UIntPtr.Zero); 
-                    }
-
-                    if (PlaySound) 
-                    {
-                        try 
+                        string fixedText = text;
+                        if (mode == 0) { char[] chars = text.ToCharArray(); for (int i = 0; i < chars.Length; i++) { if (char.IsUpper(chars[i])) chars[i] = char.ToLower(chars[i]); else if (char.IsLower(chars[i])) chars[i] = char.ToUpper(chars[i]); } fixedText = new string(chars); }
+                        else if (mode == 1) fixedText = text.ToUpper(); else if (mode == 2) fixedText = text.ToLower(); else if (mode == 3) fixedText = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(text.ToLower());
+                        
+                        SafeSetText(fixedText); 
+                        System.Threading.Thread.Sleep(50);
+                        
+                        keybd_event(0x11, 0, 0, UIntPtr.Zero); keybd_event(0x56, 0, 0, UIntPtr.Zero); System.Threading.Thread.Sleep(20); keybd_event(0x56, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); keybd_event(0x11, 0, KEYEVENTF_KEYUP, UIntPtr.Zero); System.Threading.Thread.Sleep(150);
+                        
+                        if (mode == 0 && ToggleCaps)
                         {
-                            string wavPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Media", "Speech On.wav");
-                            if (File.Exists(wavPath)) { using (System.Media.SoundPlayer sp = new System.Media.SoundPlayer(wavPath)) sp.Play(); }
-                            else System.Console.Beep(2200, 40);
-                        } 
-                        catch {}
+                            keybd_event(0x14, 0x3A, 0, UIntPtr.Zero); 
+                            keybd_event(0x14, 0x3A, KEYEVENTF_KEYUP, UIntPtr.Zero); 
+                        }
+
+                        if (PlaySound) 
+                        {
+                            try 
+                            {
+                                string wavPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Media", "Speech On.wav");
+                                if (File.Exists(wavPath)) { using (System.Media.SoundPlayer sp = new System.Media.SoundPlayer(wavPath)) sp.Play(); }
+                                else System.Console.Beep(2200, 40);
+                            } 
+                            catch {}
+                        }
                     }
+                    
+                    if (oldText != null) SafeSetText(oldText); else SafeClear();
                 }
-                if (oldText != null) Clipboard.SetText(oldText); else Clipboard.Clear();
+                catch (Exception)
+                {
+                    // Izņēmumsituācija "noķerta", lietotne neaizvērsies
+                }
             }
 
             private void OnSettings(object sender, EventArgs e) { using (var frm = new SettingsForm(this)) { if (frm.ShowDialog() == DialogResult.OK) { SaveSettings(); } } }
