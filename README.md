@@ -60,7 +60,7 @@ This project is licensed under the MIT License.
 Thank you for using my tool! If you have any questions or suggestions for improvements, feel free to reach out or open an Issue.
 
 ## Changelog
-* **v1.3** - Fixed clipboard conflicts causing application crashes in Autodesk AutoCAD and Revit.
+* **v1.3** - Fixed clipboard conflicts that caused OopsCaps crashes in some applications, such as AutoCAD and Revit.
 * **v1.2** - Initial settings and translation support.
 * **v1.1** - Functional and visual improvements.
 * **v1.0** - Let's start ;)
