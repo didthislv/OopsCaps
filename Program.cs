@@ -27,7 +27,7 @@ namespace OopsCaps
         public static string LblLang(string lang) { return lang == "lv" ? "Izvēlies valodu:" : (lang == "ru" ? "Выберите язык:" : "Language:"); }
         public static string LblSupport(string lang) { return lang == "lv" ? "Atbalsti projektu:" : (lang == "ru" ? "Поддержать проект:" : "Support the project:"); }
         public static string BtnSave(string lang) { return lang == "lv" ? "Saglabāt" : (lang == "ru" ? "Сохранить" : "Save"); }
-        public static string VerAuth(string lang) { return lang == "lv" ? "Versija v1.3\n© 2026 didthis.lv" : (lang == "ru" ? "Версия v1.3\n© 2026 didthis.lv" : "Version v1.3\n© 2026 didthis.lv"); }
+        public static string VerAuth(string lang) { return lang == "lv" ? "Versija v1.4\n© 2026 didthis.lv" : (lang == "ru" ? "Версия v1.4\n© 2026 didthis.lv" : "Version v1.4\n© 2026 didthis.lv"); }
     }
 
     static class Program
@@ -64,7 +64,7 @@ namespace OopsCaps
             public uint Mods = 0x0002 | 0x0004; // Ctrl + Shift
             public uint VkInv = 0x49, VkUpr = 0x55, VkLwr = 0x4C, VkTtl = 0x54; // I, U, L, T
             public bool PlaySound = true; public string Lang = "en";
-            public bool ToggleCaps = false; 
+            public bool ToggleCaps = true; 
 
             protected override void SetVisibleCore(bool value) { if (!this.IsHandleCreated) CreateHandle(); base.SetVisibleCore(false); }
 
